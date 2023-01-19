@@ -19,7 +19,8 @@ export type RemainsResultType = {
 
 export default function Vending() {
   const [products, setPropducts] = useState(productsDefaultState);
-  const [getActiveProduct, updateActiveProduct] = useActiveItem<ProductItemType>(products);
+  const [getActiveProduct, updateActiveProduct] =
+    useActiveItem<ProductItemType>(products);
 
   const userMoney = useMoney(userDefaultBalance);
   const machineMoney = useMoney(machineDefaultBalance);
@@ -34,36 +35,66 @@ export default function Vending() {
     const activeProduct = getActiveProduct();
     if (!activeProduct) return;
 
-    userMoney.removeSeveralMoney(money)
-    machineMoney.addSeveralMoney(money)
+    userMoney.removeSeveralMoney(money);
+    machineMoney.addSeveralMoney(money);
 
-    decrementProductCount(activeProduct)
+    decrementProductCount(activeProduct);
 
-    const remainsRes = calculateRemains(money, activeProduct.price, machineMoney.balance);
-    const remainsFromBuyMoreProduct = buyProductsRemainingMoney(remainsRes.money)
+    const remainsRes = calculateRemains(
+      money,
+      activeProduct.price,
+      machineMoney.balance
+    );
 
-    const remainsProducts = [activeProduct.name,  ...remainsFromBuyMoreProduct.remains]
-    setRemainsResult({ ...remainsRes, products: remainsProducts, money: remainsFromBuyMoreProduct.money });
+    const remainsFromBuyMoreProduct = buyProductsRemainingMoney(
+      remainsRes.money
+    );
 
-    machineMoney.removeSeveralMoney(remainsRes.balance)
-    userMoney.addSeveralMoney(remainsRes.balance)
+    const remainsProducts = [
+      activeProduct.name,
+      ...remainsFromBuyMoreProduct.remains,
+    ];
+    setRemainsResult({
+      ...remainsRes,
+      products: remainsProducts,
+      money: remainsFromBuyMoreProduct.money,
+    });
+
+    machineMoney.removeSeveralMoney(remainsRes.balance);
+    userMoney.addSeveralMoney(remainsRes.balance);
   };
-  
+
   const decrementProductCount = (product: ProductItemType) => {
-    setPropducts(products.map((prod) =>prod.id === product.id ? { ...prod, count: Math.max(0, prod.count - 1) }: prod));
-  }
+    setPropducts(
+      products.map((prod) =>
+        prod.id === product.id
+          ? { ...prod, count: Math.max(0, prod.count - 1) }
+          : prod
+      )
+    );
+  };
 
   const buyProductsRemainingMoney = (money: number) => {
-    const remainsProducts = []
+    const remainsProducts = [];
     while (true) {
-      const prod = products.find((prod) => prod.price <= money && prod.count > 0);
-      
+      const prod = products.find(
+        (prod) => prod.price <= money && prod.count > 0
+      );
       if (!prod) break;
+
+      setPropducts((prefProduct) =>
+        prefProduct.map((prodItem) =>
+          prodItem.id === prod.id
+            ? { ...prodItem, count: Math.max(prodItem.count - 1, 0) }
+            : prodItem
+        )
+      );
+
       money = money - prod.price;
       remainsProducts.push(prod.name);
     }
-    return {remains: remainsProducts, money}
-  }
+    return { remains: remainsProducts, money };
+  };
 
   return (
     <div className="vending-machine">

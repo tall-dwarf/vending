@@ -18,13 +18,13 @@ export default function useMoney(defaultBalance: WallentState[] = []): UseWallen
   const [balance, setBalance] = useState<WallentState[]>(defaultBalance);
 
   const addMoney = (nominal: number, count: number) => {
-    setBalance(balance.map(bal => bal.nominal === nominal ? {...bal, count: bal.count + count} : bal))
+    setBalance((prefBalance) => prefBalance.map(bal => bal.nominal === nominal ? {...bal, count: bal.count + count} : bal))
   }
 
   const removeMoney = (nominal: number, count: number) => {
     const nominalItem = balance.find(bal => bal.nominal === nominal)
     if(nominalItem && nominalItem.count >= count){
-      setBalance(balance.map(balItm => balItm.nominal === nominal ? {...balItm, count: balItm.count - count} : balItm))
+      setBalance((prefBalance) => prefBalance.map(balItm => balItm.nominal === nominal ? {...balItm, count: balItm.count - count} : balItm))
       return true
     }
     return false

@@ -8,8 +8,7 @@ export const calculateRemains = (
   productPrice: number,
   balance: MoneyType[]
 ) => {
-  let issueAmount =
-    money.reduce((acc, mon) => acc + mon.count * mon.nominal, 0) - productPrice;
+  let issueAmount = money.reduce((acc, mon) => acc + mon.count * mon.nominal, 0) - productPrice;
 
   const resultBalance = [];
   balance.sort((bal1, bal2) => bal2.nominal - bal1.nominal);
@@ -30,3 +29,4 @@ export const calculateRemains = (
     money: issueAmount,
   };
 };
+
