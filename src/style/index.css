@@ -1,0 +1,61 @@
+* {
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+}
+
+.vending-machine {
+    width: 950px;
+    max-width: 100%;
+    margin: 0 auto;
+    /* height: 500px; */
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: -7px 0px 30px 15px rgba(0, 0, 0, 0.1);
+}
+
+.vending-machine__inner {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.vending-machine-content {
+    flex: 0 1 66%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.vending-machine-menu {
+    flex: 0 1 30%;
+}
+
+.vending-machine-item {
+    flex: 0 1 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.vending-machine-menu__list {
+    list-style-type: none;
+    padding: 0px;
+}
+
+.vending-machine-menu__form {
+    margin-top: 20px;
+}
+
+.vending-machine-item--dark {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+}
