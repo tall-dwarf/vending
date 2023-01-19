@@ -45,7 +45,7 @@ export default function VendingMenuForm({
         <CustomSelect
           key={balIem.nominal}
           onSelected={(count) =>
-            formBalance.addMoney(balIem.nominal, Number(count))
+            formBalance.updateMoney(balIem.nominal, Number(count))
           }
           options={balanceItemTooptions(balIem)}
           label={`Номинал ${balIem.nominal}`}

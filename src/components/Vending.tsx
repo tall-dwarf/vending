@@ -74,7 +74,7 @@ export default function Vending() {
     );
   };
 
-  // Покупка продукции на оставшиеся мани
+  // Покупка продукции на оставшиеся деньги
   const buyProductsRemainingMoney = (money: number) => {
     const remainsProducts = [];
     while (true) {

@@ -6,47 +6,77 @@ export type WallentState = {
 };
 
 type UseWallentReturn = {
-  balance: WallentState[],
-  calculateBalance: () => number,
-  addMoney: (nominal: number, count: number) => void,
-  removeMoney: (nominal: number, count: number) => boolean
-  addSeveralMoney: (money: WallentState[]) => void,
-  removeSeveralMoney: (money: WallentState[]) => void
+  balance: WallentState[];
+  calculateBalance: () => number;
+  addMoney: (nominal: number, count: number) => void;
+  removeMoney: (nominal: number, count: number) => boolean;
+  addSeveralMoney: (money: WallentState[]) => void;
+  removeSeveralMoney: (money: WallentState[]) => void;
+  updateMoney: (nominal: number, count: number) => void;
 };
 
-export default function useMoney(defaultBalance: WallentState[] = []): UseWallentReturn {
+export default function useMoney(
+  defaultBalance: WallentState[] = []
+): UseWallentReturn {
   const [balance, setBalance] = useState<WallentState[]>(defaultBalance);
 
   const addMoney = (nominal: number, count: number) => {
-    setBalance((prefBalance) => prefBalance.map(bal => bal.nominal === nominal ? {...bal, count: bal.count + count} : bal))
-  }
+    setBalance((prefBalance) =>
+      prefBalance.map((bal) =>
+        bal.nominal === nominal ? { ...bal, count: bal.count + count } : bal
+      )
+    );
+  };
 
   const removeMoney = (nominal: number, count: number) => {
-    const nominalItem = balance.find(bal => bal.nominal === nominal)
-    if(nominalItem && nominalItem.count >= count){
-      setBalance((prefBalance) => prefBalance.map(balItm => balItm.nominal === nominal ? {...balItm, count: balItm.count - count} : balItm))
-      return true
+    const nominalItem = balance.find((bal) => bal.nominal === nominal);
+    if (nominalItem && nominalItem.count >= count) {
+      setBalance((prefBalance) =>
+        prefBalance.map((balItm) =>
+          balItm.nominal === nominal
+            ? { ...balItm, count: balItm.count - count }
+            : balItm
+        )
+      );
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const removeSeveralMoney = (money: WallentState[]) => {
-
     for (let index = 0; index < money.length; index++) {
       removeMoney(money[index].nominal, money[index].count);
     }
-  }
+  };
 
   const addSeveralMoney = (money: WallentState[]) => {
-    
     for (let index = 0; index < money.length; index++) {
       addMoney(money[index].nominal, money[index].count);
     }
-  }
+  };
+
+  const updateMoney = (nominal: number, count: number) => {
+    setBalance((oldBalance) =>
+      oldBalance.map((balItem) =>
+        balItem.nominal === nominal ? { ...balItem, count: count } : balItem
+      )
+    );
+  };
 
   const calculateBalance = () => {
-    return balance.reduce((acc, balItem) => acc + (balItem.count * balItem.nominal) ,0)
-  }
+    return balance.reduce(
+      (acc, balItem) => acc + balItem.count * balItem.nominal,
+      0
+    );
+  };
 
-  return {balance, calculateBalance, addMoney, removeMoney, addSeveralMoney, removeSeveralMoney};
+  return {
+    balance,
+    calculateBalance,
+    addMoney,
+    removeMoney,
+    addSeveralMoney,
+    removeSeveralMoney,
+    updateMoney,
+  };
 }
