@@ -83,3 +83,15 @@ export const userDefaultBalance: WallentState[] = [
   { nominal: 100, count: 4 },
   { nominal: 50, count: 11 },
 ];
+
+export type RemainsResultType = {
+  balance: WallentState[];
+  money: number;
+  products: string[];
+};
+
+export const remainsDefaultState: RemainsResultType = {
+  balance: [],
+  money: 0,
+  products: [],
+}

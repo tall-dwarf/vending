@@ -5,10 +5,11 @@ import {
   ProductItemType,
   machineDefaultBalance,
   userDefaultBalance,
+  remainsDefaultState,
 } from "../default/VendingMachine";
 import useMoney, { WallentState } from "../hooks/useMoney";
 import useActiveItem from "../hooks/useActiveItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { calculateRemains } from "../assets/money";
 
 export type RemainsResultType = {
@@ -17,22 +18,20 @@ export type RemainsResultType = {
   products: string[];
 };
 
+// Компонент жирный, и как его уменьшить я не знаю
 export default function Vending() {
   const [products, setPropducts] = useState(productsDefaultState);
-  const [getActiveProduct, updateActiveProduct] =
+  const { activeItemId, getActiveItem, updateActiveItem } =
     useActiveItem<ProductItemType>(products);
 
   const userMoney = useMoney(userDefaultBalance);
   const machineMoney = useMoney(machineDefaultBalance);
 
-  const [remainsResult, setRemainsResult] = useState<RemainsResultType>({
-    balance: [],
-    money: 0,
-    products: [],
-  });
+  const [remainsResult, setRemainsResult] = useState(remainsDefaultState);
 
+  // Покупка товаров
   const buyProduct = (money: WallentState[]) => {
-    const activeProduct = getActiveProduct();
+    const activeProduct = getActiveItem();
     if (!activeProduct) return;
 
     userMoney.removeSeveralMoney(money);
@@ -64,9 +63,10 @@ export default function Vending() {
     userMoney.addSeveralMoney(remainsRes.balance);
   };
 
+  // Уменьшение к-ва товара на 1
   const decrementProductCount = (product: ProductItemType) => {
-    setPropducts(
-      products.map((prod) =>
+    setPropducts((prefProducts) =>
+      prefProducts.map((prod) =>
         prod.id === product.id
           ? { ...prod, count: Math.max(0, prod.count - 1) }
           : prod
@@ -74,6 +74,7 @@ export default function Vending() {
     );
   };
 
+  // Покупка продукции на оставшиеся мани
   const buyProductsRemainingMoney = (money: number) => {
     const remainsProducts = [];
     while (true) {
@@ -82,13 +83,7 @@ export default function Vending() {
       );
       if (!prod) break;
 
-      setPropducts((prefProduct) =>
-        prefProduct.map((prodItem) =>
-          prodItem.id === prod.id
-            ? { ...prodItem, count: Math.max(prodItem.count - 1, 0) }
-            : prodItem
-        )
-      );
+      decrementProductCount(prod);
 
       money = money - prod.price;
       remainsProducts.push(prod.name);
@@ -96,17 +91,21 @@ export default function Vending() {
     return { remains: remainsProducts, money };
   };
 
+  useEffect(() => {
+    setRemainsResult(remainsDefaultState);
+  }, [activeItemId]);
+
   return (
     <div className="vending-machine">
       <div className="vending-machine__inner">
         <VendingMachineContent
-          updateActiveProduct={updateActiveProduct}
+          updateActiveProduct={updateActiveItem}
           products={products}
         ></VendingMachineContent>
         <VendingMachineMenu
           remainsResult={remainsResult}
           buyProduct={buyProduct}
-          activeProduct={getActiveProduct()}
+          activeProduct={getActiveItem()}
           userBalance={userMoney.balance}
         ></VendingMachineMenu>
       </div>

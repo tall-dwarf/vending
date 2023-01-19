@@ -4,16 +4,16 @@ interface ActiveItemRequired {
   id: number;
 }
 
-type useActiveItemReturnType<T> = [
+type useActiveItemReturnType<T> = {
+  activeItemId: number,
   getActiveItem: () => T | undefined,
-  updateActiveItem: (newItemId: number) => void,
-  
-];
+  updateActiveItem: (newItemId: number) => void, 
+};
 
 export default function useActiveItem<T extends ActiveItemRequired>(
   itemsState: T[]
 ): useActiveItemReturnType<T> {
-  const [itemId, setItemId] = useState<number>(0);
+  const [activeItemId, setItemId] = useState<number>(0);
 
   const updateActiveItem = (newItemId: number) => {
     setItemId(newItemId);
@@ -21,7 +21,7 @@ export default function useActiveItem<T extends ActiveItemRequired>(
 
 
   const getActiveItem = () => {
-    return itemsState.find((item) => item.id === itemId);
+    return itemsState.find((item) => item.id === activeItemId);
   };
-  return [getActiveItem, updateActiveItem];
+  return {activeItemId, getActiveItem, updateActiveItem};
 }
