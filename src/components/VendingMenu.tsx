@@ -2,7 +2,7 @@ import { WallentState } from "../hooks/useMoney";
 import VendingMachineMenuInfo from "./VendingMenuInfo";
 import { ProductItemType } from "../default/VendingMachine";
 import VendingMachineMenuForm from "./VendingMenuForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RemainsResultType } from "./Vending";
 import VendingMachineMenuResult from "./VendingMenuResult";
 
@@ -20,6 +20,10 @@ export default function VendingMenu({
   remainsResult,
 }: VendingMenuProps) {
   const [resIsopen, setResIsOpen] = useState(false);
+
+  useEffect(()=> {
+    setResIsOpen(false)
+  },[activeProduct])
 
   return (
     <div className="vending-machine-menu">
