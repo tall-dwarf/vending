@@ -21,6 +21,9 @@ export default function VendingMenu({
 }: VendingMenuProps) {
   const [resIsopen, setResIsOpen] = useState(false);
 
+  console.log(remainsResult);
+  
+
   return (
     <div className="vending-machine-menu">
       <VendingMachineMenuInfo
@@ -36,7 +39,7 @@ export default function VendingMenu({
       ) : (
         "Выберите товар для покупки"
       )}
-      {Boolean(remainsResult.balance.length) && (
+      {Boolean(remainsResult.products) && (
         <button
           onClick={() => setResIsOpen(true)}
           className="btn btn-success mt-2"
